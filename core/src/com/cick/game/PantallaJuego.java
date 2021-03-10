@@ -1,11 +1,15 @@
 package com.cick.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class PantallaJuego extends BaseScreen {
 
     public PantallaJuego(Main game) { super(game); }
+    private int x = 0;
+    private int y = 4;
+
 
 
     SpriteBatch spriteBatch;
@@ -29,15 +33,13 @@ public class PantallaJuego extends BaseScreen {
         //los utilizamos
 
         spriteBatch.draw(background, 0, 0, 640, 480);
+        spriteBatch.draw(ballonRed, x, y);
+        if (x == Gdx.graphics.getWidth()) {
+            x = 0;
+        } else {
+            x++;
+        }
 
-        spriteBatch.draw(ballonRed, 60, 60);
-        spriteBatch.draw(ballonGreen, 120, 160);
-        spriteBatch.draw(ballonBlue, 160, 260);
-
-        spriteBatch.draw(ballonRed, 360, 60, 100, 100);
-        spriteBatch.draw(ballonGreen, 360, 60, 50, 50);
-        spriteBatch.draw(ballonGreen, 460, 160, 80, 80);
-        spriteBatch.draw(ballonBlue, 260, 260, 140, 140);
 
         spriteBatch.end();
     }
