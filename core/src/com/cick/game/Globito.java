@@ -6,8 +6,8 @@ import java.util.Random;
 
 public class Globito {
     static Texture ballonBlue = new Texture("ballon_blue.png");
-    static Texture ballonGreen = new Texture("ballon_blue.png");
-    static Texture ballonRed = new Texture("ballon_blue.png");
+    static Texture ballonGreen = new Texture("ballon_green.png");
+    static Texture ballonRed = new Texture("ballon_red.png");
 
     public int size;
     Texture textura;
@@ -18,7 +18,8 @@ public class Globito {
     public Globito() {
         Random random = new Random();
 
-        int color= random.nextInt(3);
+        int color = random.nextInt(3);
+        System.out.println(color);
         if (color == 0){
             this.textura = ballonBlue;
         }else if (color==1){
@@ -27,10 +28,17 @@ public class Globito {
             this.textura = ballonRed ;
         }
 
-        this.posX = random.nextInt(100);
-        this.posY = random.nextInt(100)+1;
+        this.posX = random.nextInt(450)+10;
+        this.posY = random.nextInt(340)+1;
         this.speed = random.nextInt(10)+1;
-        this.size =  random.nextInt(400)+1;
+        this.size =  random.nextInt(50)+50;
     }
 
+    public Globito(Texture textura, int posX, int posY, int size, int speed) {
+        this.size = size;
+        this.textura = textura;
+        this.posX = posX;
+        this.posY = posY;
+        this.speed = speed;
+    }
 }

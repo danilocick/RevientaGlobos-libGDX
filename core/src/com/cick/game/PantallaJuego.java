@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +15,8 @@ public class PantallaJuego extends BaseScreen {
     boolean move_left = false;
     private int contador;
     private int movedor = 0;
-    private int alarmaCreadorDeGlobos=3;
-    private int contadorDelta=0;
+    private float alarmaCreadorDeGlobos= 2.5F;
+    private float contadorDelta=0;
     private BitmapFont bitmapFont;
     List<Globito> arrayGlobitos = new ArrayList<>();
 
@@ -42,26 +41,49 @@ public class PantallaJuego extends BaseScreen {
     @Override
     public void render(float delta) {
         spriteBatch.begin();
-        contadorDelta+=delta;
-        if (alarmaCreadorDeGlobos < delta){
-            System.out.println("hola");
+        contadorDelta+= delta;
+        if (alarmaCreadorDeGlobos < contadorDelta){
+            System.out.println("nou globito");
             arrayGlobitos.add(new Globito());
-            alarmaCreadorDeGlobos+=3;
+            if (contador >= 12){
+                alarmaCreadorDeGlobos+=0.5F;
+            }else if (contador>=30){
+                alarmaCreadorDeGlobos+=0.25F;
+            }else if (contador>=33){
+                alarmaCreadorDeGlobos+=0.1F;
+            }else {
+                alarmaCreadorDeGlobos+=0.75F;
+            }
+        }
+
+        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
+            for (int i = 0; i < arrayGlobitos.size(); i++) {
+                if (arrayGlobitos.get(i).posX+50 >= Gdx.input.getX() && arrayGlobitos.get(i).posX-50 <= Gdx.input.getX() && arrayGlobitos.get(i).posY+50 >= (Gdx.graphics.getHeight()-Gdx.input.getY()) && arrayGlobitos.get(i).posY-50 <= (Gdx.graphics.getHeight()-Gdx.input.getY()) ){
+                    arrayGlobitos.remove(i);
+                    contador++;
+                }
+            }
         }
 
         //los utilizamos
         spriteBatch.draw(background, 0, 0, 640, 480);
         for (int i = 0; i < arrayGlobitos.size(); i++) {
             spriteBatch.draw(arrayGlobitos.get(i).textura,arrayGlobitos.get(i).posX,arrayGlobitos.get(i).posY,arrayGlobitos.get(i).size,arrayGlobitos.get(i).size);
+            if (arrayGlobitos.get(i).posY+2 == 640){
+                arrayGlobitos.remove(i);
+            }else {
+                Globito e = new Globito(arrayGlobitos.get(i).textura,arrayGlobitos.get(i).posX,arrayGlobitos.get(i).posY+2,arrayGlobitos.get(i).size,arrayGlobitos.get(i).size);
+                arrayGlobitos.set(i, e);
+            }
         }
 
+
+        for (int i = 0; i < arrayGlobitos.size(); i++) {
+            spriteBatch.draw(arrayGlobitos.get(i).textura,arrayGlobitos.get(i).posX,arrayGlobitos.get(i).posY,arrayGlobitos.get(i).size,arrayGlobitos.get(i).size);
+        }
 
 
         bitmapFont.draw(spriteBatch, "PUNTUACIÓN: "+contador,300, 300);
-
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
-            contador++;
-        }
 
         //MOVER BOLA
 //        if (x == Gdx.graphics.getWidth()) {
