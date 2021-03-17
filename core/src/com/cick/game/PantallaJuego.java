@@ -80,8 +80,7 @@ public class PantallaJuego extends BaseScreen {
             for (int i = 0; i < arrayGlobitos.size(); i++) {
                 if (arrayGlobitos.get(i).posX+50 >= Gdx.input.getX() && arrayGlobitos.get(i).posX-50 <= Gdx.input.getX() && arrayGlobitos.get(i).posY+50 >= (Gdx.graphics.getHeight()-Gdx.input.getY()) && arrayGlobitos.get(i).posY-50 <= (Gdx.graphics.getHeight()-Gdx.input.getY()) ){
                     arrayGlobitos.remove(i);
-                    contador++;
-//                    if(arrayGlobitos.get(i).colorglobo.equals(colorglobo)){
+//                    if(arrayGlobitos.get(i).colorglobo.equals(colorglobo)) {
 //                        contador++;
 //                    }else contador--;
                 }
