@@ -8,15 +8,20 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class PantallaJuego extends BaseScreen {
 
     public PantallaJuego(Main game) { super(game); }
+
     boolean move_left = false;
     private int contador;
     private int movedor = 0;
+    private Random random = new Random();
     private float alarmaCreadorDeGlobos= 2.5F;
+    private float alarmaCambioColor = 7F;
     private float contadorDelta=0;
+    private String colorglobo;
     private BitmapFont bitmapFont;
     List<Globito> arrayGlobitos = new ArrayList<>();
 
@@ -42,6 +47,19 @@ public class PantallaJuego extends BaseScreen {
     public void render(float delta) {
         spriteBatch.begin();
         contadorDelta+= delta;
+
+        if (alarmaCambioColor<contadorDelta){
+            int color = random.nextInt(3);
+            if (color == 0){
+                colorglobo = "blue";
+            }else if (color==1){
+                colorglobo = "green";
+            }else {
+                colorglobo = "red";
+            }
+            alarmaCambioColor+=7F;
+        }
+
         if (alarmaCreadorDeGlobos < contadorDelta){
             System.out.println("nou globito");
             arrayGlobitos.add(new Globito());
@@ -56,11 +74,14 @@ public class PantallaJuego extends BaseScreen {
             }
         }
 
+        //TODO: mejorar la precision
         if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
             for (int i = 0; i < arrayGlobitos.size(); i++) {
                 if (arrayGlobitos.get(i).posX+50 >= Gdx.input.getX() && arrayGlobitos.get(i).posX-50 <= Gdx.input.getX() && arrayGlobitos.get(i).posY+50 >= (Gdx.graphics.getHeight()-Gdx.input.getY()) && arrayGlobitos.get(i).posY-50 <= (Gdx.graphics.getHeight()-Gdx.input.getY()) ){
                     arrayGlobitos.remove(i);
-                    contador++;
+                    if(arrayGlobitos.get(i).colorglobo.equals(colorglobo)){
+                        contador++;
+                    }else contador--;
                 }
             }
         }

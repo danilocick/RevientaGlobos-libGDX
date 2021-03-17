@@ -11,6 +11,7 @@ public class Globito {
 
     public int size;
     Texture textura;
+    String colorglobo;
     int posX;
     int posY;
     int speed;
@@ -22,10 +23,13 @@ public class Globito {
         System.out.println(color);
         if (color == 0){
             this.textura = ballonBlue;
+            colorglobo = "blue";
         }else if (color==1){
             this.textura = ballonGreen;
+            colorglobo = "green";
         }else {
             this.textura = ballonRed ;
+            colorglobo = "red";
         }
 
         this.posX = random.nextInt(450)+10;
