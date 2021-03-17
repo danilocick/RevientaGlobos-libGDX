@@ -19,9 +19,9 @@ public class PantallaJuego extends BaseScreen {
     private int movedor = 0;
     private Random random = new Random();
     private float alarmaCreadorDeGlobos= 2.5F;
-    private float alarmaCambioColor = 7F;
+    private float alarmaCambioColor = 6F;
     private float contadorDelta=0;
-    private String colorglobo;
+    private String colorglobo = "green";
     private BitmapFont bitmapFont;
     List<Globito> arrayGlobitos = new ArrayList<>();
 
@@ -57,9 +57,10 @@ public class PantallaJuego extends BaseScreen {
             }else {
                 colorglobo = "red";
             }
-            alarmaCambioColor+=7F;
+            alarmaCambioColor+=6F;
         }
 
+        //CREAR UN NUEVO GLOBO
         if (alarmaCreadorDeGlobos < contadorDelta){
             System.out.println("nou globito");
             arrayGlobitos.add(new Globito());
@@ -79,32 +80,49 @@ public class PantallaJuego extends BaseScreen {
             for (int i = 0; i < arrayGlobitos.size(); i++) {
                 if (arrayGlobitos.get(i).posX+50 >= Gdx.input.getX() && arrayGlobitos.get(i).posX-50 <= Gdx.input.getX() && arrayGlobitos.get(i).posY+50 >= (Gdx.graphics.getHeight()-Gdx.input.getY()) && arrayGlobitos.get(i).posY-50 <= (Gdx.graphics.getHeight()-Gdx.input.getY()) ){
                     arrayGlobitos.remove(i);
-                    if(arrayGlobitos.get(i).colorglobo.equals(colorglobo)){
-                        contador++;
-                    }else contador--;
+                    contador++;
+//                    if(arrayGlobitos.get(i).colorglobo.equals(colorglobo)){
+//                        contador++;
+//                    }else contador--;
                 }
             }
         }
 
-        //los utilizamos
+        //printamos background
         spriteBatch.draw(background, 0, 0, 640, 480);
+
+        //pintamos los globitos y movemos una posición hacia arriaba y a los lados.
         for (int i = 0; i < arrayGlobitos.size(); i++) {
             spriteBatch.draw(arrayGlobitos.get(i).textura,arrayGlobitos.get(i).posX,arrayGlobitos.get(i).posY,arrayGlobitos.get(i).size,arrayGlobitos.get(i).size);
-            if (arrayGlobitos.get(i).posY+2 == 640){
+            if (arrayGlobitos.get(i).posY+1 == 640){
                 arrayGlobitos.remove(i);
             }else {
-                Globito e = new Globito(arrayGlobitos.get(i).textura,arrayGlobitos.get(i).posX,arrayGlobitos.get(i).posY+2,arrayGlobitos.get(i).size,arrayGlobitos.get(i).size);
+                Globito e;
+                if (arrayGlobitos.get(i).movedor == true ) {
+                    if (arrayGlobitos.get(i).contador_movedor == 45){
+                        arrayGlobitos.get(i).movedor = false;
+                        arrayGlobitos.get(i).contador_movedor = 0;
+                    }
+                    e = new Globito(arrayGlobitos.get(i).textura,arrayGlobitos.get(i).posX+1,arrayGlobitos.get(i).posY+1,arrayGlobitos.get(i).size,arrayGlobitos.get(i).speed,arrayGlobitos.get(i).movedor, arrayGlobitos.get(i).contador_movedor+1);
+                }else {
+                    if (arrayGlobitos.get(i).contador_movedor == 45){
+                        arrayGlobitos.get(i).movedor = true;
+                        arrayGlobitos.get(i).contador_movedor = 0;
+                    }
+                    e = new Globito(arrayGlobitos.get(i).textura,arrayGlobitos.get(i).posX-1,arrayGlobitos.get(i).posY+1,arrayGlobitos.get(i).size,arrayGlobitos.get(i).speed,arrayGlobitos.get(i).movedor,arrayGlobitos.get(i).contador_movedor+1);
+                }
+
                 arrayGlobitos.set(i, e);
+
             }
         }
 
 
-        for (int i = 0; i < arrayGlobitos.size(); i++) {
-            spriteBatch.draw(arrayGlobitos.get(i).textura,arrayGlobitos.get(i).posX,arrayGlobitos.get(i).posY,arrayGlobitos.get(i).size,arrayGlobitos.get(i).size);
-        }
 
 
-        bitmapFont.draw(spriteBatch, "PUNTUACIÓN: "+contador,300, 300);
+        //puntuación y globos a petar
+        bitmapFont.draw(spriteBatch, "PUNTUACIÓN: "+contador,250, 300);
+        bitmapFont.draw(spriteBatch, ""+colorglobo.toUpperCase(),10, 450);
 
         //MOVER BOLA
 //        if (x == Gdx.graphics.getWidth()) {
