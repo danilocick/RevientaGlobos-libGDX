@@ -2,6 +2,7 @@ package com.cick.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -59,6 +60,7 @@ public class PantallaJuego extends BaseScreen {
                 colorglobo = "red";
             }
             alarmaCambioColor+=6F;
+            getColorToText();
         }
 
         //CREAR UN NUEVO GLOBO
@@ -135,5 +137,16 @@ public class PantallaJuego extends BaseScreen {
         bitmapFont.draw(spriteBatch, ""+colorglobo.toUpperCase(),12, 465);
 
         spriteBatch.end();
+    }
+
+    private void getColorToText() {
+        int color = random.nextInt(3);
+        if (color == 0){
+            bitmapFont.setColor(new Color(0, 0, 255f,1));
+        }else if (color==1){
+            bitmapFont.setColor(new Color(0, 255, 0, 1));
+        }else {
+            bitmapFont.setColor(new Color(255, 0, 0, 1));
+        }
     }
 }
