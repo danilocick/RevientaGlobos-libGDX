@@ -64,11 +64,11 @@ public class PantallaJuego extends BaseScreen {
         if (alarmaCreadorDeGlobos < contadorDelta){
             System.out.println("nou globito");
             arrayGlobitos.add(new Globito());
-            if (contador >= 12){
+            if (contador == 12){
                 alarmaCreadorDeGlobos+=0.5F;
-            }else if (contador>=30){
+            }else if (contador==30){
                 alarmaCreadorDeGlobos+=0.25F;
-            }else if (contador>=33){
+            }else if (contador==33){
                 alarmaCreadorDeGlobos+=0.1F;
             }else {
                 alarmaCreadorDeGlobos+=0.75F;
@@ -81,7 +81,7 @@ public class PantallaJuego extends BaseScreen {
                 if (arrayGlobitos.get(i).posX+50 >= Gdx.input.getX() && arrayGlobitos.get(i).posX-50 <= Gdx.input.getX() && arrayGlobitos.get(i).posY+50 >= (Gdx.graphics.getHeight()-Gdx.input.getY()) && arrayGlobitos.get(i).posY-50 <= (Gdx.graphics.getHeight()-Gdx.input.getY()) ){
                     arrayGlobitos.remove(i);
 //                    if(arrayGlobitos.get(i).colorglobo.equals(colorglobo)) {
-//                        contador++;
+                        contador++;
 //                    }else contador--;
                 }
             }
@@ -123,30 +123,6 @@ public class PantallaJuego extends BaseScreen {
         bitmapFont.draw(spriteBatch, "PUNTUACIÓN: "+contador,250, 300);
         bitmapFont.draw(spriteBatch, ""+colorglobo.toUpperCase(),10, 450);
 
-        //MOVER BOLA
-//        if (x == Gdx.graphics.getWidth()) {
-//            x = 0;
-//        }
-//        else {
-//            if (move_left){
-//                movedor++;
-//                y++;
-//                if (movedor == 45){
-//                    move_left=false;
-//                    movedor=0;
-//                }
-//
-//            }
-//            else {
-//                movedor++;
-//                y--;
-//                if (movedor == 45){
-//                    move_left=true;
-//                    movedor=0;
-//                }
-//            }
-//            x++;
-//        }
         spriteBatch.end();
     }
 }
