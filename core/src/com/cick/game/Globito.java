@@ -46,14 +46,4 @@ public class Globito {
 
         contador_movedor =0;
     }
-
-    public Globito(Texture textura, int posX, int posY, int size, int speed, boolean movedor, int contador_movedor) {
-        this.size = size;
-        this.textura = textura;
-        this.posX = posX;
-        this.posY = posY;
-        this.speed = speed;
-        this.movedor= movedor;
-        this.contador_movedor=contador_movedor;
-    }
 }

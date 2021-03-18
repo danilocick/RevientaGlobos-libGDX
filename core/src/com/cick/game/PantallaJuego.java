@@ -62,17 +62,20 @@ public class PantallaJuego extends BaseScreen {
         }
 
         //CREAR UN NUEVO GLOBO
-        if (alarmaCreadorDeGlobos < contadorDelta){
+        if (alarmaCreadorDeGlobos < contadorDelta) {
             System.out.println("nou globito");
             arrayGlobitos.add(new Globito());
-            if (contador == 12){
-                alarmaCreadorDeGlobos+=0.5F;
-            }else if (contador==30){
-                alarmaCreadorDeGlobos+=0.25F;
-            }else if (contador==33){
-                alarmaCreadorDeGlobos+=0.1F;
+
+            if (contador >30){
+                alarmaCreadorDeGlobos+=0.3F;
+            }else if (contador>25){
+                alarmaCreadorDeGlobos+=0.40F;
+            }else if (contador>20){
+                alarmaCreadorDeGlobos+=0.55F;
+            }else if (contador>15){
+                alarmaCreadorDeGlobos+=0.85F;
             }else {
-                alarmaCreadorDeGlobos+=0.75F;
+                alarmaCreadorDeGlobos += 1F;
             }
         }
 
@@ -82,7 +85,7 @@ public class PantallaJuego extends BaseScreen {
             int my = Gdx.graphics.getHeight() - Gdx.input.getY();
             for(Globito globito: arrayGlobitos){
 //                if ((globito.posX + globito.size/2) + globito.size/2 >= mx && (globito.posX + globito.size/2) - globito.size/2 <= mx && (globito.posY + globito.size/2) + globito.size/2 >= my && (globito.posY + globito.size/2) + globito.size/2 <= my){
-                  if (globito.posX + (globito.size/2) == mx && globito.posY + (globito.size/2) == my){
+                  if (globito.posX <= mx && globito.posX + globito.size >= mx && globito.posY <= my && globito.posY + globito.size >= my){
                     globito.eliminar = true;
                     if(globito.colorglobo.equals(colorglobo)) {
                         contador++;
