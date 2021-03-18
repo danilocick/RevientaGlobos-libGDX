@@ -1,7 +1,6 @@
 package com.cick.game;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.sun.management.internal.VMOptionCompositeData;
 
 import java.util.Random;
 
@@ -16,7 +15,7 @@ public class Globito {
     public int posY;
     public int size;
     public int speed;
-    public boolean movedor;
+    public boolean direccion;
     public int contador_movedor;
     public boolean eliminar;
 
@@ -41,8 +40,8 @@ public class Globito {
         this.speed = random.nextInt(2)+1;
         this.size =  random.nextInt(50)+50;
         if (size % 2 ==0){
-            movedor = true;
-        }else movedor = false;
+            direccion = true;
+        }else direccion = false;
 
         contador_movedor =0;
     }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.net.CookieHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -15,7 +16,6 @@ public class PantallaJuego extends BaseScreen {
 
     public PantallaJuego(Main game) { super(game); }
 
-    boolean move_left = false;
     private int contador;
     private int movedor = 0;
     private Random random = new Random();
@@ -26,10 +26,9 @@ public class PantallaJuego extends BaseScreen {
     private BitmapFont bitmapFont;
     List<Globito> arrayGlobitos = new ArrayList<>();
 
-
-
     SpriteBatch spriteBatch;
     Texture background, ballonRed, ballonGreen, ballonBlue;
+    Color colorpintado;
 
     @Override
     public void show() {
@@ -49,7 +48,7 @@ public class PantallaJuego extends BaseScreen {
         spriteBatch.begin();
         contadorDelta+= delta;
 
-        // UPDATE
+        // UPDATE COLOR AND TEXT
         if (alarmaCambioColor<contadorDelta){
             int color = random.nextInt(3);
             if (color == 0){
@@ -60,10 +59,10 @@ public class PantallaJuego extends BaseScreen {
                 colorglobo = "red";
             }
             alarmaCambioColor+=6F;
-            getColorToText();
+            setColorToText();
         }
 
-        //CREAR UN NUEVO GLOBO
+        //CREADOR DE UN NUEVO GLOBO
         if (alarmaCreadorDeGlobos < contadorDelta) {
             System.out.println("nou globito");
             arrayGlobitos.add(new Globito());
@@ -81,12 +80,11 @@ public class PantallaJuego extends BaseScreen {
             }
         }
 
-        //TODO: mejorar la precision
+        //CHECK IF IS PRESSED ONE BALL
         if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
             int mx = Gdx.input.getX();
             int my = Gdx.graphics.getHeight() - Gdx.input.getY();
             for(Globito globito: arrayGlobitos){
-//                if ((globito.posX + globito.size/2) + globito.size/2 >= mx && (globito.posX + globito.size/2) - globito.size/2 <= mx && (globito.posY + globito.size/2) + globito.size/2 >= my && (globito.posY + globito.size/2) + globito.size/2 <= my){
                   if (globito.posX <= mx && globito.posX + globito.size >= mx && globito.posY <= my && globito.posY + globito.size >= my){
                     globito.eliminar = true;
                     if(globito.colorglobo.equals(colorglobo)) {
@@ -99,13 +97,14 @@ public class PantallaJuego extends BaseScreen {
             arrayGlobitos.removeIf(globito -> globito.eliminar);
         }
 
+        //MOVER GLOBITO
         for (Globito globito : arrayGlobitos) {
             if (globito.posY+1 == 640){
                 globito.eliminar = true;
             }else {
-                if (globito.movedor) {
+                if (globito.direccion) {
                     if (globito.contador_movedor == 45){
-                        globito.movedor = false;
+                        globito.direccion = false;
                         globito.contador_movedor = 0;
                     }
                     globito.posX++;
@@ -113,7 +112,7 @@ public class PantallaJuego extends BaseScreen {
                     globito.contador_movedor++;
                 }else {
                     if (globito.contador_movedor == 45){
-                        globito.movedor = true;
+                        globito.direccion = true;
                         globito.contador_movedor = 0;
                     }
                     globito.posX--;
@@ -129,24 +128,32 @@ public class PantallaJuego extends BaseScreen {
         spriteBatch.draw(background, 0, 0, 640, 480);
 
         //pintamos los globitos y movemos una posición hacia arriaba y a los lados.
-        for(Globito globito:arrayGlobitos){
-            spriteBatch.draw(globito.textura,globito.posX,globito.posY,globito.size,globito.size);
-        }
+        for(Globito globito:arrayGlobitos) spriteBatch.draw(globito.textura,globito.posX,globito.posY,globito.size,globito.size);
+
         //puntuación y globos a petar
-        bitmapFont.draw(spriteBatch, "PUNTUACIÓN: "+contador,250, 300);
-        bitmapFont.draw(spriteBatch, ""+colorglobo.toUpperCase(),12, 465);
+        PrintTxt();
 
         spriteBatch.end();
     }
 
-    private void getColorToText() {
+    private void PrintTxt() {
+        bitmapFont.setColor(new Color(0,0,0,1));
+        bitmapFont.draw(spriteBatch, "PUNTUACIÓN: "+contador,250, 300);
+        if (colorpintado == null){
+            setColorToText();
+        }
+        bitmapFont.setColor(colorpintado);
+        bitmapFont.draw(spriteBatch, ""+colorglobo.toUpperCase(),12, 465);
+    }
+
+    private void setColorToText() {
         int color = random.nextInt(3);
         if (color == 0){
-            bitmapFont.setColor(new Color(0, 0, 255f,1));
+            colorpintado = new Color(0, 0, 255f,1);
         }else if (color==1){
-            bitmapFont.setColor(new Color(0, 255, 0, 1));
+            colorpintado = new Color(0, 255, 0, 1);
         }else {
-            bitmapFont.setColor(new Color(255, 0, 0, 1));
+            colorpintado = new Color(255, 0, 0, 1);
         }
     }
 }

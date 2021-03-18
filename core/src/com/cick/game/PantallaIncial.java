@@ -26,6 +26,7 @@ public class PantallaIncial extends BaseScreen {
         BaseButton buttonStart = new BaseButton("button_start_up.png","button_start_over.png",280,200,24*3,10*3, new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.input.setInputProcessor(null);
                 setScreen(new PantallaJuego(game));
                 return true;
             }
