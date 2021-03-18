@@ -18,6 +18,7 @@ public class Globito {
     public int speed;
     public boolean movedor;
     public int contador_movedor;
+    public boolean eliminar;
 
     public Globito() {
         Random random = new Random();
@@ -37,7 +38,7 @@ public class Globito {
 
         this.posX = random.nextInt(450)+10;
         this.posY = random.nextInt(340)+1;
-        this.speed = random.nextInt(10)+1;
+        this.speed = random.nextInt(2)+1;
         this.size =  random.nextInt(50)+50;
         if (size % 2 ==0){
             movedor = true;

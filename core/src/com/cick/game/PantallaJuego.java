@@ -48,6 +48,7 @@ public class PantallaJuego extends BaseScreen {
         spriteBatch.begin();
         contadorDelta+= delta;
 
+        // UPDATE
         if (alarmaCambioColor<contadorDelta){
             int color = random.nextInt(3);
             if (color == 0){
@@ -77,51 +78,58 @@ public class PantallaJuego extends BaseScreen {
 
         //TODO: mejorar la precision
         if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
-            for (int i = 0; i < arrayGlobitos.size(); i++) {
-                if (arrayGlobitos.get(i).posX+50 >= Gdx.input.getX() && arrayGlobitos.get(i).posX-50 <= Gdx.input.getX() && arrayGlobitos.get(i).posY+50 >= (Gdx.graphics.getHeight()-Gdx.input.getY()) && arrayGlobitos.get(i).posY-50 <= (Gdx.graphics.getHeight()-Gdx.input.getY()) ){
-                    arrayGlobitos.remove(i);
-//                    if(arrayGlobitos.get(i).colorglobo.equals(colorglobo)) {
+            int mx = Gdx.input.getX();
+            int my = Gdx.graphics.getHeight() - Gdx.input.getY();
+            for(Globito globito: arrayGlobitos){
+//                if ((globito.posX + globito.size/2) + globito.size/2 >= mx && (globito.posX + globito.size/2) - globito.size/2 <= mx && (globito.posY + globito.size/2) + globito.size/2 >= my && (globito.posY + globito.size/2) + globito.size/2 <= my){
+                  if (globito.posX + (globito.size/2) == mx && globito.posY + (globito.size/2) == my){
+                    globito.eliminar = true;
+                    if(globito.colorglobo.equals(colorglobo)) {
                         contador++;
-//                    }else contador--;
+                    } else {
+                        contador--;
+                    }
+                }
+            }
+            arrayGlobitos.removeIf(globito -> globito.eliminar);
+        }
+
+        for (Globito globito : arrayGlobitos) {
+            if (globito.posY+1 == 640){
+                globito.eliminar = true;
+            }else {
+                if (globito.movedor) {
+                    if (globito.contador_movedor == 45){
+                        globito.movedor = false;
+                        globito.contador_movedor = 0;
+                    }
+                    globito.posX++;
+                    globito.posY+=globito.speed;
+                    globito.contador_movedor++;
+                }else {
+                    if (globito.contador_movedor == 45){
+                        globito.movedor = true;
+                        globito.contador_movedor = 0;
+                    }
+                    globito.posX--;
+                    globito.posY+=globito.speed;
+                    globito.contador_movedor++;
                 }
             }
         }
+        arrayGlobitos.removeIf(globito -> globito.eliminar);
 
+        // RENDER
         //printamos background
         spriteBatch.draw(background, 0, 0, 640, 480);
 
         //pintamos los globitos y movemos una posición hacia arriaba y a los lados.
-        for (int i = 0; i < arrayGlobitos.size(); i++) {
-            spriteBatch.draw(arrayGlobitos.get(i).textura,arrayGlobitos.get(i).posX,arrayGlobitos.get(i).posY,arrayGlobitos.get(i).size,arrayGlobitos.get(i).size);
-            if (arrayGlobitos.get(i).posY+1 == 640){
-                arrayGlobitos.remove(i);
-            }else {
-                Globito e;
-                if (arrayGlobitos.get(i).movedor == true ) {
-                    if (arrayGlobitos.get(i).contador_movedor == 45){
-                        arrayGlobitos.get(i).movedor = false;
-                        arrayGlobitos.get(i).contador_movedor = 0;
-                    }
-                    e = new Globito(arrayGlobitos.get(i).textura,arrayGlobitos.get(i).posX+1,arrayGlobitos.get(i).posY+1,arrayGlobitos.get(i).size,arrayGlobitos.get(i).speed,arrayGlobitos.get(i).movedor, arrayGlobitos.get(i).contador_movedor+1);
-                }else {
-                    if (arrayGlobitos.get(i).contador_movedor == 45){
-                        arrayGlobitos.get(i).movedor = true;
-                        arrayGlobitos.get(i).contador_movedor = 0;
-                    }
-                    e = new Globito(arrayGlobitos.get(i).textura,arrayGlobitos.get(i).posX-1,arrayGlobitos.get(i).posY+1,arrayGlobitos.get(i).size,arrayGlobitos.get(i).speed,arrayGlobitos.get(i).movedor,arrayGlobitos.get(i).contador_movedor+1);
-                }
-
-                arrayGlobitos.set(i, e);
-
-            }
+        for(Globito globito:arrayGlobitos){
+            spriteBatch.draw(globito.textura,globito.posX,globito.posY,globito.size,globito.size);
         }
-
-
-
-
         //puntuación y globos a petar
         bitmapFont.draw(spriteBatch, "PUNTUACIÓN: "+contador,250, 300);
-        bitmapFont.draw(spriteBatch, ""+colorglobo.toUpperCase(),10, 450);
+        bitmapFont.draw(spriteBatch, ""+colorglobo.toUpperCase(),12, 465);
 
         spriteBatch.end();
     }
