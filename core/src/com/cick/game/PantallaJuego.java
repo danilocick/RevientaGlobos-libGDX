@@ -14,8 +14,6 @@ import java.util.Random;
 
 public class PantallaJuego extends BaseScreen {
 
-    public PantallaJuego(Main game) { super(game); }
-
     private int contador;
     private int movedor = 0;
     private Random random = new Random();
@@ -29,6 +27,8 @@ public class PantallaJuego extends BaseScreen {
     SpriteBatch spriteBatch;
     Texture background, ballonRed, ballonGreen, ballonBlue;
     Color colorpintado;
+
+    public PantallaJuego(Main game) { super(game); }
 
     @Override
     public void show() {
@@ -97,29 +97,9 @@ public class PantallaJuego extends BaseScreen {
             arrayGlobitos.removeIf(globito -> globito.eliminar);
         }
 
-        //MOVER GLOBITO
+        //MOVER GLOBITO i eliminar necesarios
         for (Globito globito : arrayGlobitos) {
-            if (globito.posY+1 == 640){
-                globito.eliminar = true;
-            }else {
-                if (globito.direccion) {
-                    if (globito.contador_movedor == 45){
-                        globito.direccion = false;
-                        globito.contador_movedor = 0;
-                    }
-                    globito.posX++;
-                    globito.posY+=globito.speed;
-                    globito.contador_movedor++;
-                }else {
-                    if (globito.contador_movedor == 45){
-                        globito.direccion = true;
-                        globito.contador_movedor = 0;
-                    }
-                    globito.posX--;
-                    globito.posY+=globito.speed;
-                    globito.contador_movedor++;
-                }
-            }
+            globito.move(globito);
         }
         arrayGlobitos.removeIf(globito -> globito.eliminar);
 
@@ -128,7 +108,9 @@ public class PantallaJuego extends BaseScreen {
         spriteBatch.draw(background, 0, 0, 640, 480);
 
         //pintamos los globitos y movemos una posición hacia arriaba y a los lados.
-        for(Globito globito:arrayGlobitos) spriteBatch.draw(globito.textura,globito.posX,globito.posY,globito.size,globito.size);
+        for(Globito globito:arrayGlobitos){
+            spriteBatch.draw(globito.textura,globito.posX,globito.posY,globito.size,globito.size);
+        }
 
         //puntuación y globos a petar
         PrintTxt();

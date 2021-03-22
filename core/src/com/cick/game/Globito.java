@@ -45,4 +45,29 @@ public class Globito {
 
         contador_movedor =0;
     }
+
+    public void move(Globito globito) {
+        if (globito.posY+ globito.speed == 640){
+            globito.eliminar = true;
+        }else {
+            if (globito.direccion) { //mover izquierda
+                if (globito.contador_movedor == 45){
+                    globito.direccion = false;
+                    globito.contador_movedor = 0;
+                }
+                globito.posX++;
+                globito.posY+=globito.speed;
+                globito.contador_movedor++;
+
+            }else { //mover derecha
+                if (globito.contador_movedor == 45){
+                    globito.direccion = true;
+                    globito.contador_movedor = 0;
+                }
+                globito.posX--;
+                globito.posY+=globito.speed;
+                globito.contador_movedor++;
+            }
+        }
+    }
 }
