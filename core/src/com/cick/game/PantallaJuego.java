@@ -7,12 +7,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import java.net.CookieHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class PantallaJuego extends BaseScreen {
+
+    private boolean paletilla = true;
 
     private int contador;
     private int movedor = 0;
@@ -20,13 +21,16 @@ public class PantallaJuego extends BaseScreen {
     private float alarmaCreadorDeGlobos= 2.5F;
     private float alarmaCambioColor = 6F;
     private float contadorDelta=0;
-    private String colorglobo = "green";
+
     private BitmapFont bitmapFont;
     List<Globito> arrayGlobitos = new ArrayList<>();
 
     SpriteBatch spriteBatch;
-    Texture background, ballonRed, ballonGreen, ballonBlue;
-    Color colorpintado;
+    Texture background, ballonRed, ballonGreen, ballonBlue, paleta, abc;
+
+    private String colorTexto;
+    private String palabra;
+    private Color colorLetras;
 
     public PantallaJuego(Main game) { super(game); }
 
@@ -41,6 +45,8 @@ public class PantallaJuego extends BaseScreen {
         ballonRed = new Texture("ballon_red.png");
         ballonGreen = new Texture("ballon_green.png");
         ballonBlue = new Texture("ballon_blue.png");
+        paleta = new Texture("paleta.png");
+        abc = new Texture("abc.png");
     }
 
     @Override
@@ -50,16 +56,9 @@ public class PantallaJuego extends BaseScreen {
 
         // UPDATE COLOR AND TEXT
         if (alarmaCambioColor<contadorDelta){
-            int color = random.nextInt(3);
-            if (color == 0){
-                colorglobo = "blue";
-            }else if (color==1){
-                colorglobo = "green";
-            }else {
-                colorglobo = "red";
-            }
-            alarmaCambioColor+=6F;
+            setPalete();
             setColorToText();
+            alarmaCambioColor+=6F;
         }
 
         //CREADOR DE UN NUEVO GLOBO
@@ -87,10 +86,18 @@ public class PantallaJuego extends BaseScreen {
             for(Globito globito: arrayGlobitos){
                   if (globito.posX <= mx && globito.posX + globito.size >= mx && globito.posY <= my && globito.posY + globito.size >= my){
                     globito.eliminar = true;
-                    if(globito.colorglobo.equals(colorglobo)) {
-                        contador++;
-                    } else {
-                        contador--;
+                    if (paletilla){
+                        if(globito.colorglobo.equals(colorTexto)) {
+                            contador++;
+                        } else {
+                            contador--;
+                        }
+                    }else {
+                        if(globito.colorglobo.equals(palabra)) {
+                            contador++;
+                        } else {
+                            contador--;
+                        }
                     }
                 }
             }
@@ -120,22 +127,55 @@ public class PantallaJuego extends BaseScreen {
 
     private void PrintTxt() {
         bitmapFont.setColor(new Color(0,0,0,1));
-        bitmapFont.draw(spriteBatch, "PUNTUACIÓN: "+contador,250, 300);
-        if (colorpintado == null){
+        bitmapFont.draw(spriteBatch, "PUNTUACIÓN: "+contador,490, 450);
+        if (colorLetras == null){
             setColorToText();
         }
-        bitmapFont.setColor(colorpintado);
-        bitmapFont.draw(spriteBatch, ""+colorglobo.toUpperCase(),12, 465);
+        if (palabra == null){
+            setPalabra();
+        }
+        bitmapFont.setColor(colorLetras);
+        bitmapFont.draw(spriteBatch, ""+ palabra.toUpperCase(),15, 450);
+        if (paletilla) {
+            spriteBatch.draw(paleta, 15, 380, 45, 45);
+        }else {
+            spriteBatch.draw(abc, 15, 380, 45, 45);
+        }
     }
 
     private void setColorToText() {
         int color = random.nextInt(3);
         if (color == 0){
-            colorpintado = new Color(0, 0, 255f,1);
+            colorLetras = new Color(0, 0, 255f,1);
+            colorTexto = "blue";
         }else if (color==1){
-            colorpintado = new Color(0, 255, 0, 1);
+            colorLetras = new Color(0, 255, 0, 1);
+            colorTexto = "green";
         }else {
-            colorpintado = new Color(255, 0, 0, 1);
+            colorLetras = new Color(255, 0, 0, 1);
+            colorTexto = "red";
+        }
+    }
+
+    private void setPalete() {
+        int letras = random.nextInt(2);
+        if (letras==0){
+            paletilla = true;
+        }else {
+            paletilla = false;
+        }
+
+        setPalabra();
+    }
+
+    private void setPalabra() {
+        int x = random.nextInt(3);
+        if (x == 0){
+            palabra = "blue";
+        }else if (x == 1){
+            palabra = "green";
+        }else{
+            palabra = "red";
         }
     }
 }

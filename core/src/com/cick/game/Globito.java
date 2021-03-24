@@ -12,9 +12,9 @@ public class Globito {
     public Texture textura;
     public String colorglobo;
     public int posX;
-    public int posY;
+    public float posY;
     public int size;
-    public int speed;
+    public float speed;
     public boolean direccion;
     public int contador_movedor;
     public boolean eliminar;
@@ -36,9 +36,9 @@ public class Globito {
         }
 
         this.posX = random.nextInt(450)+10;
-        this.posY = random.nextInt(340)+1;
-        this.speed = random.nextInt(2)+1;
-        this.size =  random.nextInt(50)+50;
+        this.posY = 0;
+        this.speed = 0.12F + random.nextFloat() * (2 - 0.08F);
+        this.size =  random.nextInt(25)+50;
         if (size % 2 ==0){
             direccion = true;
         }else direccion = false;
@@ -59,7 +59,8 @@ public class Globito {
                 globito.posY+=globito.speed;
                 globito.contador_movedor++;
 
-            }else { //mover derecha
+            }
+            else { //mover derecha
                 if (globito.contador_movedor == 45){
                     globito.direccion = true;
                     globito.contador_movedor = 0;
