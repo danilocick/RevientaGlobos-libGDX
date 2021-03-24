@@ -17,6 +17,7 @@ public class PantallaGameOver extends BaseScreen{
     private Texture background;
     private Stage stage;
     private int contador;
+    private BaseButton buttonQuit, buttonStart;
 
     public PantallaGameOver(Main game, int contador) {
         super(game);
@@ -29,10 +30,15 @@ public class PantallaGameOver extends BaseScreen{
 
         bitmapFont = new BitmapFont();
 
-        //Cargas los recursos a utilizar
-        background = new Texture("gameover.jpg");
+
+        //printamos background
+//        spriteBatch.begin();
+//        background = new Texture("globitos.jpg");
+//        spriteBatch.draw(background, 0, 0, 640, 480);
+//        spriteBatch.end();
+
         // Boton START
-        BaseButton buttonStart = new BaseButton("button_start_up.png","button_start_over.png",280,200,24*3,10*3, new InputListener(){
+        buttonStart = new BaseButton("button_start_up.png","button_start_over.png",280,200,24*3,10*3, new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 Gdx.input.setInputProcessor(null);
@@ -42,7 +48,7 @@ public class PantallaGameOver extends BaseScreen{
         });
 
         // Boton QUIT
-        BaseButton buttonQuit = new BaseButton("button_quit_up.png","button_quit_over.png",280,160,24*3,10*3, new InputListener(){
+        buttonQuit = new BaseButton("button_quit_up.png","button_quit_over.png",280,160,24*3,10*3, new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 Gdx.app.exit();
@@ -50,6 +56,7 @@ public class PantallaGameOver extends BaseScreen{
                 return true;
             }
         });
+
 
         Gdx.input.setInputProcessor(stage = new Stage());
         stage.addActor(buttonStart);
@@ -59,13 +66,11 @@ public class PantallaGameOver extends BaseScreen{
     @Override
     public void render(float delta) {
         spriteBatch.begin();
-
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        //printamos background
         stage.act();
         stage.draw();
+
         printTxt();
 
         spriteBatch.end();
@@ -73,9 +78,16 @@ public class PantallaGameOver extends BaseScreen{
 
     public void printTxt() {
         bitmapFont.setColor(new Color(0,0,0,1));
-        bitmapFont.draw(spriteBatch, "PUNTUACIÓN TOTAL : "+contador,240, 380);
+        bitmapFont.draw(spriteBatch, "PUNTUACIÓN TOTAL : ",247, 380);
+        bitmapFont.draw(spriteBatch, ""+contador,310, 340);
+        bitmapFont.setColor(new Color(255,0,0,1));
+        bitmapFont.draw(spriteBatch, "GAME OVER",275, 300);
 
-        bitmapFont.draw(spriteBatch, "GAME OVER",280, 300);
+//        bitmapFont.setColor(new Color(1,1,1,1));
+//        bitmapFont.draw(spriteBatch, "PUNTUACIÓN TOTAL : ",400, 380);
+//        bitmapFont.draw(spriteBatch, ""+contador,465, 340);
+//        bitmapFont.setColor(new Color(255,0,0,1));
+//        bitmapFont.draw(spriteBatch, "GAME OVER",423, 300);
 
     }
 }

@@ -112,6 +112,7 @@ public class PantallaJuego extends BaseScreen {
                             contador--;
                         }
                     }
+                    break;
                 }
             }
             arrayGlobitos.removeIf(globito -> globito.eliminar);
