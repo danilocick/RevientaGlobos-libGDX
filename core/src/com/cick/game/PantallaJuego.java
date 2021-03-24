@@ -2,6 +2,7 @@ package com.cick.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -31,6 +32,8 @@ public class PantallaJuego extends BaseScreen {
     private String colorTexto;
     private String palabra;
     private Color colorLetras;
+
+    Sound sound = Gdx.audio.newSound(Gdx.files.internal("explosion.mp3"));
 
     public PantallaJuego(Main game) { super(game); }
 
@@ -84,18 +87,22 @@ public class PantallaJuego extends BaseScreen {
             int mx = Gdx.input.getX();
             int my = Gdx.graphics.getHeight() - Gdx.input.getY();
             for(Globito globito: arrayGlobitos){
-                  if (globito.posX <= mx && globito.posX + globito.size >= mx && globito.posY <= my && globito.posY + globito.size >= my){
+                if (globito.posX <= mx && globito.posX + globito.size >= mx && globito.posY <= my && globito.posY + globito.size >= my){
                     globito.eliminar = true;
                     if (paletilla){
                         if(globito.colorglobo.equals(colorTexto)) {
+                            sound.play(1.0f);
                             contador++;
                         } else {
+                            sound.play(1.0f);
                             contador--;
                         }
                     }else {
                         if(globito.colorglobo.equals(palabra)) {
+                            sound.play(1.0f);
                             contador++;
                         } else {
+                            sound.play(1.0f);
                             contador--;
                         }
                     }
