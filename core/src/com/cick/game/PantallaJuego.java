@@ -35,7 +35,7 @@ public class PantallaJuego extends BaseScreen {
     private Color colorLetras;
 
     private static DecimalFormat df = new DecimalFormat("0");
-    private float vida = 10;
+    private float vida = 35;
 
     Sound sound = Gdx.audio.newSound(Gdx.files.internal("explosion.mp3"));
 
@@ -59,6 +59,8 @@ public class PantallaJuego extends BaseScreen {
     @Override
     public void render(float delta) {
         spriteBatch.begin();
+
+        System.out.println(delta);
         contadorDelta+= delta;
         vida-= delta;
 
@@ -133,7 +135,7 @@ public class PantallaJuego extends BaseScreen {
         //puntuación y globos a petar
         PrintTxt();
 
-        if (vida <= 1){
+        if (vida <= 0.5){
             Gdx.input.setInputProcessor(null);
             setScreen(new PantallaGameOver(game, contador));
         }
