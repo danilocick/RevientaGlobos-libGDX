@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -33,6 +34,9 @@ public class PantallaJuego extends BaseScreen {
     private String palabra;
     private Color colorLetras;
 
+    private static DecimalFormat df = new DecimalFormat("0");
+    private float vida = 10;
+
     Sound sound = Gdx.audio.newSound(Gdx.files.internal("explosion.mp3"));
 
     public PantallaJuego(Main game) { super(game); }
@@ -56,6 +60,7 @@ public class PantallaJuego extends BaseScreen {
     public void render(float delta) {
         spriteBatch.begin();
         contadorDelta+= delta;
+        vida-= delta;
 
         // UPDATE COLOR AND TEXT
         if (alarmaCambioColor<contadorDelta){
@@ -66,7 +71,6 @@ public class PantallaJuego extends BaseScreen {
 
         //CREADOR DE UN NUEVO GLOBO
         if (alarmaCreadorDeGlobos < contadorDelta) {
-            System.out.println("nou globito");
             arrayGlobitos.add(new Globito());
 
             if (contador >30){
@@ -129,18 +133,33 @@ public class PantallaJuego extends BaseScreen {
         //puntuación y globos a petar
         PrintTxt();
 
+        if (vida <= 1){
+            Gdx.input.setInputProcessor(null);
+            setScreen(new PantallaGameOver(game, contador));
+        }
+        System.out.println(vida);
         spriteBatch.end();
+
     }
 
     private void PrintTxt() {
         bitmapFont.setColor(new Color(0,0,0,1));
         bitmapFont.draw(spriteBatch, "PUNTUACIÓN: "+contador,490, 450);
+
+        if (vida < 5){
+            bitmapFont.setColor(new Color(255,0,0,1));
+        }else {
+            bitmapFont.setColor(new Color(255,255,255,1));
+        }
+        bitmapFont.draw(spriteBatch, "SEGUNDOS: "+df.format(vida),250, 450);
+
         if (colorLetras == null){
             setColorToText();
         }
         if (palabra == null){
             setPalabra();
         }
+
         bitmapFont.setColor(colorLetras);
         bitmapFont.draw(spriteBatch, ""+ palabra.toUpperCase(),15, 450);
         if (paletilla) {
@@ -171,7 +190,6 @@ public class PantallaJuego extends BaseScreen {
         }else {
             paletilla = false;
         }
-
         setPalabra();
     }
 
