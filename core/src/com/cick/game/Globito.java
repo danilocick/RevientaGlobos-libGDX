@@ -1,6 +1,7 @@
 package com.cick.game;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
 
 import java.util.Random;
 
@@ -14,61 +15,58 @@ public class Globito {
     public int posX;
     public float posY;
     public int size;
-    public float speed;
-    public boolean direccion;
-    public int contador_movedor;
+    public float speedY, speedX, accX;
+    public float alarmaCambioDireccion;
     public boolean eliminar;
 
-    public Globito() {
-        Random random = new Random();
+    Random random = new Random();
+    private float leftLimit = -0.87F;
+    private float rightLimit = 0.87F;
 
+    public Globito() {
         int color = random.nextInt(3);
-        System.out.println(color);
+
         if (color == 0){
-            this.textura = ballonBlue;
+            textura = ballonBlue;
             colorglobo = "blue";
         }else if (color==1){
-            this.textura = ballonGreen;
+            textura = ballonGreen;
             colorglobo = "green";
         }else {
-            this.textura = ballonRed ;
+            textura = ballonRed ;
             colorglobo = "red";
         }
 
-        this.posX = random.nextInt(450)+10;
-        this.posY = 0;
-        this.speed = 0.12F + random.nextFloat() * (2 - 0.08F);
-        this.size =  random.nextInt(25)+50;
-        if (size % 2 ==0){
-            direccion = true;
-        }else direccion = false;
+        posX = random.nextInt(450)+10;
 
-        contador_movedor =0;
+        speedY = 0.12F + random.nextFloat() * (2 - 0.08F);
+        setRandomSpeedX();
+        setRandomAccX();
+        size =  random.nextInt(25)+50;
+
     }
 
-    public void move(Globito globito) {
-        if (globito.posY+ globito.speed == 640){
-            globito.eliminar = true;
+    public void move(float gameTime) {
+        if (posY+ speedY > 640){
+            eliminar = true;
         }else {
-            if (globito.direccion) { //mover izquierda
-                if (globito.contador_movedor == 45){
-                    globito.direccion = false;
-                    globito.contador_movedor = 0;
-                }
-                globito.posX++;
-                globito.posY+=globito.speed;
-                globito.contador_movedor++;
-
+            if (gameTime > alarmaCambioDireccion){
+                setRandomSpeedX();
+                setRandomAccX();
+                alarmaCambioDireccion = gameTime + 1;
             }
-            else { //mover derecha
-                if (globito.contador_movedor == 45){
-                    globito.direccion = true;
-                    globito.contador_movedor = 0;
-                }
-                globito.posX--;
-                globito.posY+=globito.speed;
-                globito.contador_movedor++;
-            }
+            posY+=speedY;
+            posX+=speedX;
         }
+
+        speedX += accX;
+    }
+
+    void setRandomSpeedX(){
+        speedX = MathUtils.random(rightLimit, leftLimit);
+    }
+
+    void setRandomAccX(){
+        accX = MathUtils.random(-0.05f, 0.05f);
     }
 }

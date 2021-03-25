@@ -15,29 +15,23 @@ import java.util.Random;
 
 public class PantallaJuego extends BaseScreen {
 
-    private boolean paletilla = true;
-
-    private int contador;
-    private int movedor = 0;
     private Random random = new Random();
+    private Hood hood = new Hood(new Texture("paleta.png"), new Texture("abc.png"));
+
+    private int movedor = 0;
     private float alarmaCreadorDeGlobos= 2.5F;
     private float alarmaCambioColor = 6F;
-    private float contadorDelta=0;
+    private float gameTime =0;
 
     private BitmapFont bitmapFont;
-    List<Globito> arrayGlobitos = new ArrayList<>();
-
-    SpriteBatch spriteBatch;
-    Texture background, ballonRed, ballonGreen, ballonBlue, paleta, abc;
-
-    private String colorTexto;
-    private String palabra;
-    private Color colorLetras;
+    private SpriteBatch spriteBatch;
+    private ArrayList<Globito> arrayGlobitos = new ArrayList<>();
+    private Texture background, ballonRed, ballonGreen, ballonBlue;
 
     private static DecimalFormat df = new DecimalFormat("0");
     private float vida = 35;
 
-    Sound sound = Gdx.audio.newSound(Gdx.files.internal("explosion.mp3"));
+    private Sound sound = Gdx.audio.newSound(Gdx.files.internal("explosion.mp3"));
 
     public PantallaJuego(Main game) { super(game); }
 
@@ -52,64 +46,106 @@ public class PantallaJuego extends BaseScreen {
         ballonRed = new Texture("ballon_red.png");
         ballonGreen = new Texture("ballon_green.png");
         ballonBlue = new Texture("ballon_blue.png");
-        paleta = new Texture("paleta.png");
-        abc = new Texture("abc.png");
     }
 
     @Override
     public void render(float delta) {
         spriteBatch.begin();
 
-        System.out.println(delta);
-        contadorDelta+= delta;
+        gameTime += delta;
         vida-= delta;
 
         // UPDATE COLOR AND TEXT
-        if (alarmaCambioColor<contadorDelta){
-            setPalete();
-            setColorToText();
+        if (gameTime > alarmaCambioColor){
+            hood.setPalete();
+            hood.setColorToText();
             alarmaCambioColor+=6F;
         }
 
         //CREADOR DE UN NUEVO GLOBO
-        if (alarmaCreadorDeGlobos < contadorDelta) {
+        crearNuevoGlobo();
+
+        //CHECK IF IS PRESSED ONE BALL
+        comprobarColision();
+
+        //MOVER GLOBITO i eliminar necesarios
+        moverGlobitosyEliminarlos();
+
+        // RENDER
+        render();
+
+        comprovarSiQuedaVida();
+        spriteBatch.end();
+
+    }
+
+    private void render() {
+        //printamos background
+        spriteBatch.draw(background, 0, 0, 640, 480);
+
+        //pintamos los globitos
+        for(Globito globito:arrayGlobitos){
+            spriteBatch.draw(globito.textura,globito.posX,globito.posY,globito.size,globito.size);
+        }
+
+        //puntuación y globos a petar
+        PrintTxt();
+    }
+
+    private void moverGlobitosyEliminarlos() {
+        for (Globito globito : arrayGlobitos) {
+            globito.move(gameTime);
+        }
+        arrayGlobitos.removeIf(globito -> globito.eliminar);
+    }
+
+    private void comprovarSiQuedaVida() {
+        if (vida <= 0.5){
+            Gdx.input.setInputProcessor(null);
+            setScreen(new PantallaGameOver(game, hood.contador));
+        }
+    }
+
+    private void crearNuevoGlobo() {
+        if (alarmaCreadorDeGlobos < gameTime) {
             arrayGlobitos.add(new Globito());
 
-            if (contador >30){
+            if (hood.contador >30){
                 alarmaCreadorDeGlobos+=0.3F;
-            }else if (contador>25){
+            }else if (hood.contador>25){
                 alarmaCreadorDeGlobos+=0.40F;
-            }else if (contador>20){
+            }else if (hood.contador>20){
                 alarmaCreadorDeGlobos+=0.55F;
-            }else if (contador>15){
+            }else if (hood.contador>15){
                 alarmaCreadorDeGlobos+=0.85F;
             }else {
                 alarmaCreadorDeGlobos += 1F;
             }
         }
+    }
 
-        //CHECK IF IS PRESSED ONE BALL
+    private void comprobarColision() {
         if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
             int mx = Gdx.input.getX();
             int my = Gdx.graphics.getHeight() - Gdx.input.getY();
             for(Globito globito: arrayGlobitos){
                 if (globito.posX <= mx && globito.posX + globito.size >= mx && globito.posY <= my && globito.posY + globito.size >= my){
                     globito.eliminar = true;
-                    if (paletilla){
-                        if(globito.colorglobo.equals(colorTexto)) {
+                    if (hood.paletilla){
+                        if(globito.colorglobo.equals(hood.colorTexto)) {
                             sound.play(1.0f);
-                            contador++;
+                            hood.contador++;
                         } else {
                             sound.play(1.0f);
-                            contador--;
+                            hood.contador--;
                         }
                     }else {
-                        if(globito.colorglobo.equals(palabra)) {
+                        if(globito.colorglobo.equals(hood.palabra)) {
                             sound.play(1.0f);
-                            contador++;
+                            hood.contador++;
                         } else {
                             sound.play(1.0f);
-                            contador--;
+                            hood.contador--;
                         }
                     }
                     break;
@@ -117,37 +153,11 @@ public class PantallaJuego extends BaseScreen {
             }
             arrayGlobitos.removeIf(globito -> globito.eliminar);
         }
-
-        //MOVER GLOBITO i eliminar necesarios
-        for (Globito globito : arrayGlobitos) {
-            globito.move(globito);
-        }
-        arrayGlobitos.removeIf(globito -> globito.eliminar);
-
-        // RENDER
-        //printamos background
-        spriteBatch.draw(background, 0, 0, 640, 480);
-
-        //pintamos los globitos y movemos una posición hacia arriaba y a los lados.
-        for(Globito globito:arrayGlobitos){
-            spriteBatch.draw(globito.textura,globito.posX,globito.posY,globito.size,globito.size);
-        }
-
-        //puntuación y globos a petar
-        PrintTxt();
-
-        if (vida <= 0.5){
-            Gdx.input.setInputProcessor(null);
-            setScreen(new PantallaGameOver(game, contador));
-        }
-        System.out.println(vida);
-        spriteBatch.end();
-
     }
 
     private void PrintTxt() {
         bitmapFont.setColor(new Color(0,0,0,1));
-        bitmapFont.draw(spriteBatch, "PUNTUACIÓN: "+contador,490, 450);
+        bitmapFont.draw(spriteBatch, "PUNTUACIÓN: "+hood.contador,490, 450);
 
         if (vida < 5){
             bitmapFont.setColor(new Color(255,0,0,1));
@@ -156,54 +166,19 @@ public class PantallaJuego extends BaseScreen {
         }
         bitmapFont.draw(spriteBatch, "SEGUNDOS: "+df.format(vida),250, 450);
 
-        if (colorLetras == null){
-            setColorToText();
+        if (hood.colorLetras == null){
+            hood.setColorToText();
         }
-        if (palabra == null){
-            setPalabra();
+        if (hood.palabra == null){
+            hood.setPalabra();
         }
 
-        bitmapFont.setColor(colorLetras);
-        bitmapFont.draw(spriteBatch, ""+ palabra.toUpperCase(),15, 450);
-        if (paletilla) {
-            spriteBatch.draw(paleta, 15, 380, 45, 45);
+        bitmapFont.setColor(hood.colorLetras);
+        bitmapFont.draw(spriteBatch, ""+ hood.palabra.toUpperCase(),15, 450);
+        if (hood.paletilla) {
+            spriteBatch.draw(hood.paleta, 15, 380, 45, 45);
         }else {
-            spriteBatch.draw(abc, 15, 380, 45, 45);
-        }
-    }
-
-    private void setColorToText() {
-        int color = random.nextInt(3);
-        if (color == 0){
-            colorLetras = new Color(0, 0, 255f,1);
-            colorTexto = "blue";
-        }else if (color==1){
-            colorLetras = new Color(0, 255, 0, 1);
-            colorTexto = "green";
-        }else {
-            colorLetras = new Color(255, 0, 0, 1);
-            colorTexto = "red";
-        }
-    }
-
-    private void setPalete() {
-        int letras = random.nextInt(2);
-        if (letras==0){
-            paletilla = true;
-        }else {
-            paletilla = false;
-        }
-        setPalabra();
-    }
-
-    private void setPalabra() {
-        int x = random.nextInt(3);
-        if (x == 0){
-            palabra = "blue";
-        }else if (x == 1){
-            palabra = "green";
-        }else{
-            palabra = "red";
+            spriteBatch.draw(hood.abc, 15, 380, 45, 45);
         }
     }
 }
